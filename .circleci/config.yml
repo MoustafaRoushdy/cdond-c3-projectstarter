@@ -9,7 +9,7 @@ jobs:
     steps:
     - checkout
     - restore_cache:
-        keys: [frontend-build-{{ checksum "frontend/package-lock.json" }}]
+        keys: [ frontend-build0 ]
     - run:
         name: Build front-end
         command: |
@@ -18,14 +18,14 @@ jobs:
           npm run build
     - save_cache:
         paths: [frontend/node_modules]
-        key: frontend-build-{{ checksum "frontend/package-lock.json" }}
+        key: frontend-build0 }}
   build-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build0]
       - run:
           name: Back-end build
           command: |
@@ -41,7 +41,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-         keys: [backend-build]
+         keys: [frontend-build0]
       - run:
           name: test-frontend
           command: |
@@ -54,7 +54,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-         keys: [backend-build]
+         keys: [backend-build0]
       - run:
           name: test-backend
           command: |
@@ -68,7 +68,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-         keys: [frontend-build-{{ checksum "frontend/package-lock.json" }}]
+         keys: [frontend-build0]
       - run:
           name: scan-frontend
           command: |
@@ -85,7 +85,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-         keys: [backend-build]
+         keys: [backend-build0]
       - run:
           name: scan-backend
           command: |
