@@ -231,6 +231,8 @@ jobs:
       - checkout
       - restore_cache:
           keys: ['backend-build-{{ checksum "backend/package-lock.json" }}']
+      - install_awscli
+      - install_nodejs
       - run:
           name: Run migrations
           command: |
