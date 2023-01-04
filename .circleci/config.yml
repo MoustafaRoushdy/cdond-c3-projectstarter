@@ -249,6 +249,71 @@ jobs:
             fi
       - destroy-environment
       - revert-migrations
+  
+  deploy-frontend:
+    docker:
+      - image: cimg/python:3.10 
+    steps:
+      - checkout
+      - install_nodejs
+      - install_awscli 
+      - run:
+          name: Get backend url
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text)
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
+
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+
+      - destroy-environment
+      - revert-migrations
+      
+  deploy-backend:
+    docker:
+      - image: cimg/python:3.10 
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["d9:5f:e2:f9:ae:f3:a7:f6:89:3d:cc:af:0b:af:d3:ed"] 
+      - attach_workspace:
+          at: ~/
+      - install_ansible
+      - install_awscli
+      - install_nodejs
+      - restore_cache:
+          keys: ['backend-build-{{ checksum "backend/package-lock.json" }}']
+      - run:
+          name: Install dependencies
+          command: |
+            cd backend
+            npm install
+      - run:
+          name: Deploy backend
+          command: |
+            npm run build
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      - destroy-environment
+      - revert-migrations
+
          
 
 
@@ -275,6 +340,10 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       
           
 
