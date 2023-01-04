@@ -303,6 +303,7 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            cd backend
             npm run build
             cd ..
             # Zip the directory
