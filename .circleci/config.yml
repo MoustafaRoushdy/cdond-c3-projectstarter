@@ -153,13 +153,15 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-         keys: ['backend-build-{{ checksum "backend/package-lock.json" }}']
+      # - restore_cache:
+      #    keys: ['backend-build-{{ checksum "backend/package-lock.json" }}']
       - run:
           name: scan-backend
           command: |
             cd backend
             npm install
+            npm audit fix --audit-level=critical --force
+            npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
@@ -358,10 +360,6 @@ jobs:
         - image: amazon/aws-cli
       steps:
         - checkout
-        # - run:
-        #     name: Install dependencies
-        #     command: |
-        #       # your code here
         - run:
             name: Update cloudfront distribution
             command: |
@@ -372,7 +370,28 @@ jobs:
               --tags project=udapeople
         - destroy-environment
         - revert-migrations      
+  cleanup:
+    docker:
+      # Docker image here
+    steps:
+      # Checkout code from git
+      - run:
+          name: Get old stack workflow id
+          command: |
+            # your code here
+            export OldWorkflowID=(aws cloudformation  \
+              list-exports --query \
+              "Exports[?Name==\`WorkflowID\`].Value"  --output text) 
+            echo ${OldWorkflowId}
 
+            export STACKS=[] #put the list of stacks here
+      - run:
+          name: Remove old stacks and files
+          command: |
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
+            then
+              # your code here
+            fi
 
 
 workflows:
