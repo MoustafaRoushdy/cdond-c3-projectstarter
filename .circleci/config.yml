@@ -74,7 +74,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
     - checkout
     - restore_cache:
@@ -90,7 +90,7 @@ jobs:
         key: 'frontend-build-{{ checksum "frontend/package-lock.json" }}'
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -106,7 +106,7 @@ jobs:
           key: 'backend-build-{{ checksum "backend/package-lock.json" }}'
   test-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -119,7 +119,7 @@ jobs:
             npm run test
   test-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -133,7 +133,7 @@ jobs:
   
   scan-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -150,7 +150,7 @@ jobs:
             npm audit --audit-level=critical
   scan-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
