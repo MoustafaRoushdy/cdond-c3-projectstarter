@@ -8,6 +8,12 @@ commands:
       - run:
           name: print env variables
           command: |
+            if "postgres" == $TYPEORM_CONNECTION
+            then
+                echo "Correct" 
+            else
+                echo "Wrong" 
+            fi
             echo $TYPEORM_CONNECTION >> env.txt 
             x=$TYPEORM_CONNECTION 
             echo $x
