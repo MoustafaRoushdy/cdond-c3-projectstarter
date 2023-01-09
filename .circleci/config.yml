@@ -369,7 +369,7 @@ jobs:
             name: Get old stack workflow id and save it in kvdb
             command: |
               # your code here
-              export OldWorkflowID=(aws cloudformation  \
+              export OldWorkflowID=$(aws cloudformation  \
                 list-exports --query \
                 "Exports[?Name==\`WorkflowID\`].Value"  --output text) 
               echo ${OldWorkflowID}
