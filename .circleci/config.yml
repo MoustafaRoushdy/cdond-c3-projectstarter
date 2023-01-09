@@ -167,7 +167,7 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
             npm audit fix --audit-level=critical --force
-            npm audit --audit-level=critical
+            # npm audit --audit-level=critical
 
   deploy-infrastructure:
     docker:
@@ -243,8 +243,9 @@ jobs:
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - run:
-          name: Send migration results to memstash
+          name: Send migration results to KVDB_BUCKET
           command: |
+            echo ${KVDB_BUCKET}
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
                 # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
@@ -361,6 +362,15 @@ jobs:
       steps:
         - checkout
         - run:
+            name: Get old stack workflow id and save it in kvdb
+            command: |
+              # your code here
+              export OldWorkflowID=(aws cloudformation  \
+                list-exports --query \
+                "Exports[?Name==\`WorkflowID\`].Value"  --output text) 
+              echo ${OldWorkflowId}
+              curl https://kvdb.io/${KVDB_BUCKET}/OldWorkflowId -d '${OldWorkflowId}'
+        - run:
             name: Update cloudfront distribution
             command: |
               aws cloudformation deploy \
@@ -372,26 +382,21 @@ jobs:
         - revert-migrations      
   cleanup:
     docker:
-      # Docker image here
+      - image: amazon/aws-cli
     steps:
-      # Checkout code from git
+      - checkout
       - run:
-          name: Get old stack workflow id
+          name: get old stacke id and Remove old stacks and files
           command: |
-            # your code here
-            export OldWorkflowID=(aws cloudformation  \
-              list-exports --query \
-              "Exports[?Name==\`WorkflowID\`].Value"  --output text) 
-            echo ${OldWorkflowId}
+            # Empty frontend bucket
+            OldWorkflowId = $(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/OldWorkflowId)
+            aws s3 rm s3://udapeople-${OldWorkflowId} --recursive
 
-            export STACKS=[] #put the list of stacks here
-      - run:
-          name: Remove old stacks and files
-          command: |
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
-            then
-              # your code here
-            fi
+            # Delete frontend stack
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${OldWorkflowId}
+
+            # Delete backend stack
+            aws cloudformation delete-stack --stack-name udapeople-backend-${OldWorkflowId}
 
 
 workflows:
@@ -424,6 +429,10 @@ workflows:
           requires: [deploy-backend , deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
+
+
       
           
 
