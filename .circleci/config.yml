@@ -14,7 +14,37 @@ commands:
             else
                 echo "Wrong" 
             fi
-            if [ "1234" == "$TYPEORM_PORT" ]
+            if [ "5432" == "$TYPEORM_PORT" ]
+            then
+                echo "Correct" 
+            else
+                echo "Wrong" 
+            fi
+            if [ "postgres" == "$TYPEORM_USERNAME" ]
+            then
+                echo "Correct" 
+            else
+                echo "Wrong" 
+            fi
+            if [ "glee" == "$TTYPEORM_DATABASE" ]
+            then
+                echo "Correct" 
+            else
+                echo "Wrong" 
+            fi
+            if [ "./src/migrations/*.ts" == "$TYPEORM_MIGRATIONS" ]
+            then
+                echo "Correct" 
+            else
+                echo "Wrong" 
+            fi
+            if [ "./src/migrations" == "$TYPEORM_MIGRATIONS_DIR" ]
+            then
+                echo "Correct" 
+            else
+                echo "Wrong" 
+            fi
+            if [ "./src/modules/**/*.entity.ts" == "$TYPEORM_ENTITIESR" ]
             then
                 echo "Correct" 
             else
