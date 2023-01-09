@@ -9,6 +9,8 @@ commands:
           name: print env variables
           command: |
             echo $TYPEORM_CONNECTION >> env.txt 
+            x=$TYPEORM_CONNECTION 
+            echo $x
             echo $TYPEORM_MIGRATIONS_DIR >> env.txt
             echo $TYPEORM_ENTITIES >> env.txt
             echo $TYPEORM_MIGRATIONS >> env.txt
