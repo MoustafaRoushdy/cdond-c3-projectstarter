@@ -14,6 +14,12 @@ commands:
             else
                 echo "Wrong" 
             fi
+            if 1234 == "$TYPEORM_PORT"
+            then
+                echo "Correct" 
+            else
+                echo "Wrong" 
+            fi
             echo $TYPEORM_CONNECTION >> env.txt 
             x=$TYPEORM_CONNECTION 
             echo $x
