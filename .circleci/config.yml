@@ -32,7 +32,7 @@ commands:
             else
                 echo "Wrong" 
             fi
-            if [ './src/migrations/*.ts' == "$TYPEORM_MIGRATIONS" ]
+            if [ "./src/migrations/*.ts" == "$TYPEORM_MIGRATIONS" ]
             then
                 echo "Correct" 
             else
@@ -44,7 +44,7 @@ commands:
             else
                 echo "Wrong" 
             fi
-            if [ './src/modules/**/*.entity.ts' == "$TYPEORM_ENTITIES" ]
+            if [ "./src/modules/**/*.entity.ts" == "$TYPEORM_ENTITIES" ]
             then
                 echo "Correct" 
             else
