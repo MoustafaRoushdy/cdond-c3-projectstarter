@@ -8,7 +8,7 @@ commands:
       - run:
           name: print env variables
           command: |
-            if "postgres" == $TYPEORM_CONNECTION
+            if "postgres" == "$TYPEORM_CONNECTION"
             then
                 echo "Correct" 
             else
