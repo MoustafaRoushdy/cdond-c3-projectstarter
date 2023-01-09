@@ -389,7 +389,7 @@ jobs:
           name: get old stacke id and Remove old stacks and files
           command: |
             # Empty frontend bucket
-            OldWorkflowId = $(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/OldWorkflowId)
+            export OldWorkflowId=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/OldWorkflowId)
             aws s3 rm s3://udapeople-${OldWorkflowId} --recursive
 
             # Delete frontend stack
