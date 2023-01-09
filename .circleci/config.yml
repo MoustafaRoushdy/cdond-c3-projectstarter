@@ -14,7 +14,7 @@ commands:
             else
                 echo "Wrong" 
             fi
-            if 1234 == "$TYPEORM_PORT"
+            if "1234" == "$TYPEORM_PORT"
             then
                 echo "Correct" 
             else
