@@ -26,13 +26,13 @@ commands:
             else
                 echo "Wrong" 
             fi
-            if [ "glee" == "$TTYPEORM_DATABASE" ]
+            if [ "glee" == "$TYPEORM_DATABASE" ]
             then
                 echo "Correct" 
             else
                 echo "Wrong" 
             fi
-            if [ "./src/migrations/*.ts" == "$TYPEORM_MIGRATIONS" ]
+            if [ './src/migrations/*.ts' == "$TYPEORM_MIGRATIONS" ]
             then
                 echo "Correct" 
             else
@@ -44,7 +44,7 @@ commands:
             else
                 echo "Wrong" 
             fi
-            if [ "./src/modules/**/*.entity.ts" == "$TYPEORM_ENTITIESR" ]
+            if [ './src/modules/**/*.entity.ts' == "$TYPEORM_ENTITIESR" ]
             then
                 echo "Correct" 
             else
