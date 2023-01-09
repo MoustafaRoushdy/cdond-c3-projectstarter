@@ -44,7 +44,7 @@ commands:
             else
                 echo "Wrong" 
             fi
-            if [ './src/modules/**/*.entity.ts' == "$TYPEORM_ENTITIESR" ]
+            if [ './src/modules/**/*.entity.ts' == "$TYPEORM_ENTITIES" ]
             then
                 echo "Correct" 
             else
