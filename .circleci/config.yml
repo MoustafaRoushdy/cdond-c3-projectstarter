@@ -228,13 +228,14 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/node:13.8.0
+      - image: cimg/python:3.10 # trying python image instead of node image 
     steps:
       - checkout
-      - restore_cache:
-          keys: ['backend-build-{{ checksum "backend/package-lock.json" }}']
+
       - install_awscli
       - install_nodejs
+      - restore_cache:
+          keys: ['backend-build-{{ checksum "backend/package-lock.json" }}']
       - run:
           name: Run migrations
           command: |
@@ -249,7 +250,10 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
                 # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
+                echo "saving to kvdb"
                 curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            else
+                echo "No migrations are pending" 
             fi
       - destroy-environment
       - revert-migrations
@@ -369,7 +373,7 @@ jobs:
                 list-exports --query \
                 "Exports[?Name==\`WorkflowID\`].Value"  --output text) 
               echo ${OldWorkflowId}
-              curl https://kvdb.io/${KVDB_BUCKET}/OldWorkflowId -d '${OldWorkflowId}'
+              curl https://kvdb.io/${KVDB_BUCKET}/OldWorkflowId -d ${OldWorkflowId}
         - run:
             name: Update cloudfront distribution
             command: |
@@ -390,6 +394,7 @@ jobs:
           command: |
             # Empty frontend bucket
             export OldWorkflowId=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/OldWorkflowId)
+            echo ${OldWorkflowId}
             aws s3 rm s3://udapeople-${OldWorkflowId} --recursive
 
             # Delete frontend stack
