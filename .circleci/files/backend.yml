@@ -33,7 +33,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: ansible-task 
-      ImageId: ami-0574da719dca65348 
+      ImageId: ami-0b93ce03dcbcb10f6 
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
