@@ -136,7 +136,17 @@ jobs:
     docker:
       - image: cimg/python:3.10 
     steps:
+      - checkout
       - troubleshoot_env_vars
+      - install_nodejs
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+              cd ~/project/backend
+              npm install
+              npm run migration:revert
+      
   build-frontend:
     docker:
       - image: cimg/node:13.8.0
